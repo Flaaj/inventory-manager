@@ -6,14 +6,14 @@ import { Given, Then, When } from "cypress-cucumber-preprocessor/steps";
 //     And I submit the form
 //     Then I see the added product in the list of products
 
-let name = "";
+let name: string;
 
 Given("I am on the new product page", () => {
   cy.visit("/products/new");
 });
 
 When("I fill the form to add a product", () => {
-  name = "Product I Just Added" + Math.random();
+  name = "Product I Just Added " + Math.random();
   cy.get("input[name=name]").type(name);
 });
 

@@ -4,9 +4,19 @@ type InventoryItem = {
 };
 
 type ManageInventoryPageModel = {
-  products: Array<InventoryItem>;
+  products: Array<InventoryItem> | null;
+  shouldShowLoadingIndicator: boolean;
 };
 
-const getManageInventoryPageModel = (
-  response: Array<InventoryItem>
-): ManageInventoryPageModel => {};
+export const getManageInventoryPageModel = (
+  saveInventoryResponse?: Array<InventoryItem>,
+  saveInventoryError?: Error | null,
+  isSaveInventoryPending = false,
+  isResetInventoryPending = false
+): ManageInventoryPageModel => {
+  return {
+    products: saveInventoryResponse ?? null,
+    shouldShowLoadingIndicator:
+      isSaveInventoryPending || isResetInventoryPending,
+  };
+};
