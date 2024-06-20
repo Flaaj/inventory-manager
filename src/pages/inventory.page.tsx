@@ -44,6 +44,7 @@ export const InventoryPage = () => {
           name="product-quantity"
           min="1"
           step="1"
+          required
         />
         <Button type="submit">Add product</Button>
       </form>
@@ -67,12 +68,14 @@ export const InventoryPage = () => {
           <span className="text-lg text-gray-500">Product name</span>
           <span className="text-lg text-gray-500 mr-10">Quantity</span>
         </div>
+
         <ul>
           {model.inventoryItems?.length === 0 && (
             <li className="flex justify-between py-1 border-t last:border-b items-center">
               <p>No items in inventory</p>
             </li>
           )}
+
           {model.inventoryItems?.map((item, index) => (
             <li
               key={item.name}
@@ -80,16 +83,17 @@ export const InventoryPage = () => {
             >
               <p>{item.name}</p>
               <Input
+                className="w-20 shrink-0 ml-auto mr-4"
                 type="number"
                 id={`inventory-${index + 1}`}
                 min="0"
                 step="1"
                 name={`inventory-${index + 1}-quantity`}
                 defaultValue={item.quantity}
-                className="w-20 shrink-0 ml-auto mr-4"
+                required
               />
               <button
-                type="submit"
+                type="button"
                 id={`delete-inventory-${index + 1}`}
                 disabled={model.shouldShowLoadingIndicator}
                 onClick={() => actions.deleteInventoryItem(item)}
