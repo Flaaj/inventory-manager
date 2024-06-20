@@ -4,6 +4,7 @@
 
 # Run development
 
+- add ```.env``` file based on ```.env.example```
 - `npm run dev`
 
 # Run tests:
