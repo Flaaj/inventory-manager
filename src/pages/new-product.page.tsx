@@ -1,42 +1,49 @@
+import { Button } from "../components/Button";
+import Input from "../components/Input";
+import { ProductsList } from "../components/ProductsList";
 import { useNewProductPage } from "../modules/products/add-product/useAddProduct";
 
-const NewProductPage = () => {
+export const NewProductPage = () => {
   const { actions, model } = useNewProductPage();
 
   return (
-    <div>
-      {model.shouldShowForm && (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const productName = new FormData(e.currentTarget).get(
-              "name"
-            ) as string;
-            actions.addProduct(productName);
-          }}
-        >
-          <label htmlFor="name">Product name:</label>
-          <input id="name" name="name" />
-
-          <button type="submit" disabled={model.shouldShowLoadingIndicator}>
-            {model.shouldShowLoadingIndicator ? "Loading..." : "Save"}
-          </button>
-        </form>
+    <div className="flex flex-col items-center">
+      {model.products && (
+        <ProductsList
+          products={model.products}
+          className="mt-5 w-96 max-w-full"
+        />
       )}
 
-      {model.error && <p>{model.error}</p>}
+      <form
+        className="flex flex-col gap-4 w-96 max-w-full mt-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const productName = new FormData(e.currentTarget).get(
+            "name"
+          ) as string;
+          actions.addProduct(productName);
+          e.currentTarget.reset();
+        }}
+      >
+        <h2 className="text-2xl font-bold text-blue-700">Add a new product</h2>
 
-      {model.shouldShowSuccessMessage && <p>Product added successfully</p>}
+        <Input id="name" name="name" label="Product name:" autoFocus />
 
-      {model.products && (
-        <ul>
-          {model.products.map((product) => (
-            <li key={product.name}>{product.name}</li>
-          ))}
-        </ul>
+        <Button type="submit" disabled={model.shouldShowLoadingIndicator}>
+          {model.shouldShowLoadingIndicator ? "Adding..." : "Save"}
+        </Button>
+
+        {model.error && (
+          <p className="text-red-600 text-center">{model.error}</p>
+        )}
+      </form>
+
+      {model.shouldShowSuccessMessage && (
+        <p className="text-xl text-green-500 mt-4">
+          Product added successfully
+        </p>
       )}
     </div>
   );
 };
-
-export default NewProductPage;

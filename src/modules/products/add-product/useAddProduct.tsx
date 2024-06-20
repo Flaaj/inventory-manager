@@ -1,9 +1,32 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getNewProductPageModel } from "./add-product.service";
 
 const responseSchema = z.array(z.object({ name: z.string() }));
 const errorSchema = z.object({ error: z.string() });
+
+const getProductsResponseSchema = z.array(z.object({ name: z.string() }));
+
+const createGetProductsAdapter = () => async () => {
+  const response = await fetch(`${process.env.API_URL}/product/all`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const message = errorSchema.parse(await response.json()).error;
+    throw new Error(message);
+  }
+
+  return getProductsResponseSchema.parse(await response.json());
+};
+
+const useProducts = () => {
+  const getProducts = createGetProductsAdapter();
+  return useQuery({ queryKey: ["products"], queryFn: getProducts });
+};
 
 const createAddProductAdapter = () => async (productName: string) => {
   const response = await fetch(`${process.env.API_URL}/product`, {
@@ -32,12 +55,14 @@ const useAddProduct = () => {
 };
 
 export const useNewProductPage = () => {
+  const products = useProducts();
   const addProduct = useAddProduct();
 
   const model = getNewProductPageModel(
-    addProduct.data,
+    products.data,
     addProduct.error,
-    addProduct.isPending
+    addProduct.isPending,
+    addProduct.isSuccess
   );
 
   return {

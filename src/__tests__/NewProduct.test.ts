@@ -5,25 +5,23 @@ describe("New product page model", () => {
   it("Shows the form to add a product if user didn't submit yet", () => {
     const model = getNewProductPageModel(undefined, undefined, false);
 
-    expect(model.shouldShowForm).toBe(true);
     expect(model.error).toBe(null);
     expect(model.products).toBe(null);
     expect(model.shouldShowSuccessMessage).toBe(false);
     expect(model.shouldShowLoadingIndicator).toBe(false);
   });
 
-  it("Shows the form and error message on error", () => {
+  it("Shows error message on error", () => {
     const model = getNewProductPageModel(
       undefined,
       new Error("product name already exists"),
       false
     );
 
-    expect(model.shouldShowForm).toBe(true);
     expect(model.error).toEqual("product name already exists");
   });
 
-  it("Hides the form and shows success message and products list if user submits the form correctly", () => {
+  it("Shows success message and products list if user submits the form correctly", () => {
     const model = getNewProductPageModel(
       [
         { name: "Product 1" }, //
@@ -33,7 +31,6 @@ describe("New product page model", () => {
       false
     );
 
-    expect(model.shouldShowForm).toBe(false);
     expect(model.products).toStrictEqual([
       { name: "Product 1" }, //
       { name: "Product you just added" },

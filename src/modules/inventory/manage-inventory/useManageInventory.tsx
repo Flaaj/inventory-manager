@@ -112,7 +112,6 @@ export const useManageInventoryPage = () => {
     useState<Array<InventoryItem>>([]);
 
   const handleSaveInventory = (inventoryItems: Array<InventoryItem>) => {
-    console.log({ inventoryItems });
     saveInventory.mutate(inventoryItems, {
       onSuccess: () => setAddedInventoryItems([]),
     });
