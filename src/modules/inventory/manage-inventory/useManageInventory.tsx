@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getManageInventoryPageModel } from "./manage-inventory.service";
 import { InventoryItem } from "../../../api/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const getProductsResponseSchema = z.array(z.object({ name: z.string() }));
 const getInventoryItemsResponseSchema = z.array(
@@ -108,28 +108,28 @@ export const useManageInventoryPage = () => {
   const saveInventory = useSaveInventory();
   const resetIventory = useResetInventory();
 
-  const [addedInventoryItems, setAddedInventoryItems] = //
+  const [localInventoryItems, setLocalInventoryItems] = //
     useState<Array<InventoryItem>>([]);
 
-  const handleSaveInventory = (inventoryItems: Array<InventoryItem>) => {
-    saveInventory.mutate(inventoryItems, {
-      onSuccess: () => setAddedInventoryItems([]),
-    });
-  };
-
-  const handleResetInventory = () => {
-    resetIventory.mutate(undefined, {
-      onSuccess: () => setAddedInventoryItems([]),
-    });
-  };
+  useEffect(() => {
+    if (inventoryItems.data) {
+      setLocalInventoryItems(inventoryItems.data || []);
+    }
+  }, [inventoryItems.data]);
 
   const handleAddInventoryItem = (inventoryItem: InventoryItem) => {
-    setAddedInventoryItems((prev) => [...prev, inventoryItem]);
+    setLocalInventoryItems((prev) => [...prev, inventoryItem]);
+  };
+
+  const handleDeleteInventoryItem = (inventoryItem: InventoryItem) => {
+    setLocalInventoryItems((prev) =>
+      prev.filter((item) => item.name !== inventoryItem.name)
+    );
   };
 
   const model = getManageInventoryPageModel(
     products.data,
-    [...(inventoryItems.data || []), ...addedInventoryItems],
+    localInventoryItems,
     saveInventory.error,
     saveInventory.isPending,
     resetIventory.isPending
@@ -137,9 +137,10 @@ export const useManageInventoryPage = () => {
 
   return {
     actions: {
-      saveInventory: handleSaveInventory,
-      resetInventory: handleResetInventory,
+      saveInventory: saveInventory.mutate,
+      resetInventory: resetIventory.mutate,
       addInventoryItem: handleAddInventoryItem,
+      deleteInventoryItem: handleDeleteInventoryItem,
     },
     model,
   };

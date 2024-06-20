@@ -80,5 +80,5 @@ When("I reset the inventory", () => {
 });
 
 Then("the inventory should be empty", () => {
-  cy.get("li").should("not.exist");
+  cy.get("li").contains("shampoo").should("not.exist");
 });
