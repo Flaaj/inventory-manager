@@ -9,6 +9,9 @@ const createAddProductAdapter = () => async (productName: string) => {
   const response = await fetch(`${process.env.API_URL}/product`, {
     method: "PUT",
     body: JSON.stringify({ name: productName }),
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
   if (!response.ok) {

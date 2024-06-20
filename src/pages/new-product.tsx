@@ -1,4 +1,4 @@
-import { useNewProductPage } from "../modules/products/use_cases/add-product/useAddProduct";
+import { useNewProductPage } from "../modules/products/add-product/useAddProduct";
 
 const NewProductPage = () => {
   const { actions, model } = useNewProductPage();
@@ -19,7 +19,7 @@ const NewProductPage = () => {
           <input id="name" name="name" />
 
           <button type="submit" disabled={model.shouldShowLoadingIndicator}>
-            {model.shouldShowLoadingIndicator ? "Loading..." : "Add product"}
+            {model.shouldShowLoadingIndicator ? "Loading..." : "Save"}
           </button>
         </form>
       )}

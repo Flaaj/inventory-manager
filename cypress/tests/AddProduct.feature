@@ -1,6 +1,6 @@
 Feature: Add new product
 
-If I am on the new product page I want to be able to add a new product
+I want to add new products to the list of products
 
 @focus
 Scenario: Add new product

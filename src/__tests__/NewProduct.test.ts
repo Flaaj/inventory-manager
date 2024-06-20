@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getNewProductPageModel } from "../modules/products/use_cases/add-product/add-product.service";
+import { getNewProductPageModel } from "../modules/products/add-product/add-product.service";
 
 describe("New product page model", () => {
   it("Shows the form to add a product if user didn't submit yet", () => {
