@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getManageInventoryPageModel } from "./manage-inventory.service";
 import { InventoryItem } from "../../../api/types";
+import { useState } from "react";
 
 const getProductsResponseSchema = z.array(z.object({ name: z.string() }));
 const getInventoryItemsResponseSchema = z.array(
@@ -74,9 +75,7 @@ const useSaveInventory = () => {
   const saveInventory = createSaveInventoryAdapter();
   return useMutation({
     mutationFn: saveInventory,
-    onSuccess: (data) => {
-      client.setQueryData(["inventory"], data);
-    },
+    onSuccess: (inventory) => client.setQueryData(["inventory"], inventory),
   });
 };
 
@@ -99,30 +98,49 @@ const useResetInventory = () => {
   const resetInventory = createResetInventoryAdapter();
   return useMutation({
     mutationFn: resetInventory,
-    onSuccess: () => {
-      client.setQueryData(["inventory"], []);
-    },
+    onSuccess: () => client.setQueryData(["inventory"], []),
   });
 };
 
 export const useManageInventoryPage = () => {
   const products = useProducts();
   const inventoryItems = useInventoryItems();
-  const saveIntentory = useSaveInventory();
+  const saveInventory = useSaveInventory();
   const resetIventory = useResetInventory();
+
+  const [addedInventoryItems, setAddedInventoryItems] = //
+    useState<Array<InventoryItem>>([]);
+
+  const handleSaveInventory = (inventoryItems: Array<InventoryItem>) => {
+    console.log({ inventoryItems });
+    saveInventory.mutate(inventoryItems, {
+      onSuccess: () => setAddedInventoryItems([]),
+    });
+  };
+
+  const handleResetInventory = () => {
+    resetIventory.mutate(undefined, {
+      onSuccess: () => setAddedInventoryItems([]),
+    });
+  };
+
+  const handleAddInventoryItem = (inventoryItem: InventoryItem) => {
+    setAddedInventoryItems((prev) => [...prev, inventoryItem]);
+  };
 
   const model = getManageInventoryPageModel(
     products.data,
-    inventoryItems.data,
-    saveIntentory.error,
-    saveIntentory.isPending,
+    [...(inventoryItems.data || []), ...addedInventoryItems],
+    saveInventory.error,
+    saveInventory.isPending,
     resetIventory.isPending
   );
 
   return {
     actions: {
-      saveInventory: saveIntentory.mutate,
-      resetInventory: resetIventory.mutate,
+      saveInventory: handleSaveInventory,
+      resetInventory: handleResetInventory,
+      addInventoryItem: handleAddInventoryItem,
     },
     model,
   };

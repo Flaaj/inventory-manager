@@ -2,7 +2,55 @@ import { describe, expect, it } from "vitest";
 import { getManageInventoryPageModel } from "../modules/inventory/manage-inventory/manage-inventory.service";
 
 describe("Manage inventory", () => {
-  it("Shows inventory and lists products", () => {
+  it("Shows inventory items", () => {
+    const model = getManageInventoryPageModel(
+      [],
+      [
+        { name: "Product 1", quantity: 10 },
+        { name: "Product 2", quantity: 20 },
+        { name: "Product 3", quantity: 30 },
+        { name: "Product 4", quantity: 40 },
+        { name: "Product 5", quantity: 50 },
+      ],
+      null,
+      false,
+      false
+    );
+
+    expect(model.inventoryItems).toStrictEqual([
+      { name: "Product 1", quantity: 10 },
+      { name: "Product 2", quantity: 20 },
+      { name: "Product 3", quantity: 30 },
+      { name: "Product 4", quantity: 40 },
+      { name: "Product 5", quantity: 50 },
+    ]);
+  });
+
+  it("Lists available products", () => {
+    const model = getManageInventoryPageModel(
+      [
+        { name: "Product 1" },
+        { name: "Product 2" },
+        { name: "Product 3" },
+        { name: "Product 4" },
+        { name: "Product 5" },
+      ],
+      [],
+      null,
+      false,
+      false
+    );
+
+    expect(model.productOptions).toStrictEqual([
+      { name: "Product 1" },
+      { name: "Product 2" },
+      { name: "Product 3" },
+      { name: "Product 4" },
+      { name: "Product 5" },
+    ]);
+  });
+
+  it("Filters out products that are already in the inventory", () => {
     const model = getManageInventoryPageModel(
       [
         { name: "Product 1" },
@@ -21,10 +69,7 @@ describe("Manage inventory", () => {
       false
     );
 
-    expect(model.products).toStrictEqual([
-      { name: "Product 1" },
-      { name: "Product 2" },
-      { name: "Product 3" },
+    expect(model.productOptions).toStrictEqual([
       { name: "Product 4" },
       { name: "Product 5" },
     ]);

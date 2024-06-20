@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { getNewProductPageModel } from "./add-product.service";
 
@@ -23,8 +23,12 @@ const createAddProductAdapter = () => async (productName: string) => {
 };
 
 const useAddProduct = () => {
+  const client = useQueryClient();
   const addProduct = createAddProductAdapter();
-  return useMutation({ mutationFn: addProduct });
+  return useMutation({
+    mutationFn: addProduct,
+    onSuccess: (products) => client.setQueryData(["products"], products),
+  });
 };
 
 export const useNewProductPage = () => {

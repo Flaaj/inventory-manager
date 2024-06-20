@@ -9,16 +9,15 @@ Scenario: Add products to inventory
     And I save the inventory
     Then the inventory should be updated with the new product
 
-
-@wip
+@focus
 Scenario: Change product quantity
-    Given I am on inventory page
+    Given I am on inventory page and there is a product
     When I change product quantity
     And I save the inventory
     Then the inventory should be updated with the updated quantity of that product
 
-@wip
+@focus
 Scenario: Reset inventory
-    Given I am on inventory page
+    Given I am on inventory page and there is a product
     When I reset the inventory
     Then the inventory should be empty
