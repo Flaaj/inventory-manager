@@ -29,6 +29,7 @@ const useAddProduct = () => {
 
 export const useNewProductPage = () => {
   const addProduct = useAddProduct();
+
   const model = getNewProductPageModel(
     addProduct.data,
     addProduct.error,

@@ -19,11 +19,11 @@ When("I add a product", () => {
     randomInt = getRandomInt(1, 100);
     cy.get("select[name=product-name]").select("shampoo");
     cy.get("input[name=product-quantity]").type(randomInt.toString());
-    cy.get("button[type=submit]").contains("Add product to inventory").click();
+    cy.get("button[type=button]").contains("Add product").click();
 });
 
 When("I save the inventory", () => {
-    cy.get("button").contains("Save inventory").click();
+    cy.get("button[type=submit]").contains("Save inventory").click();
 });
 
 Then("the inventory should be updated with the new product", () => {
