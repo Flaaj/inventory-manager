@@ -13,9 +13,11 @@ describe("New product page model", () => {
   });
 
   it("Shows the form and error message on error", () => {
-    const model = getNewProductPageModel(undefined, {
-      error: "product name already exists",
-    });
+    const model = getNewProductPageModel(
+      undefined,
+      new Error("product name already exists"),
+      false
+    );
 
     expect(model.shouldShowForm).toBe(true);
     expect(model.error).toEqual("product name already exists");

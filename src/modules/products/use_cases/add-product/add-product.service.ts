@@ -10,12 +10,12 @@ type NewProductPageModel = {
 
 export const getNewProductPageModel = (
   response?: Array<Product>,
-  error?: { error: string },
+  error?: Error | null,
   isLoading = false
 ): NewProductPageModel => {
   return {
     shouldShowForm: !response,
-    error: error?.error ?? null,
+    error: error?.message ?? null,
     shouldShowSuccessMessage: !!response,
     products: response ?? null,
     shouldShowLoadingIndicator: isLoading,
