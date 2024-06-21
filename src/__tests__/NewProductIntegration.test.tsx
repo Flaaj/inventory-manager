@@ -29,8 +29,8 @@ describe("New Product Page", () => {
     cy.get("button[type=submit]").click();
 
     cy.get("p").contains("Product added successfully").should("be.visible");
-    cy.get("li").contains("Shampoo").should("be.visible");
-    cy.get("li").contains("Milk").should("be.visible");
-    cy.get("li").contains("New Product I Just Added").should("be.visible");
+    cy.get("td").contains("Shampoo").should("be.visible");
+    cy.get("td").contains("Milk").should("be.visible");
+    cy.get("td").contains("New Product I Just Added").should("be.visible");
   });
 });
