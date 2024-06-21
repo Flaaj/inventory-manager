@@ -28,7 +28,8 @@ describe("New product page model", () => {
         { name: "Product you just added" },
       ],
       undefined,
-      false
+      false,
+      true
     );
 
     expect(model.products).toStrictEqual([
