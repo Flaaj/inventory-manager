@@ -22,5 +22,5 @@ When("I submit the form", () => {
 });
 
 Then("I see the added product in the list of products", () => {
-  cy.get("li").contains(name);
+  cy.get("td").contains(name);
 });
