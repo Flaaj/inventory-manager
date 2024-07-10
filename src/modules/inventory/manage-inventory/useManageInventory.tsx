@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getManageInventoryPageModel } from "./manage-inventory.service";
 import { useEffect, useState } from "react";
-import {
+import type {
   InventoryItem,
   InventoryItems,
-  InventoryItemsSchema,
 } from "../../../models/inventory-items";
+import { InventoryItemsSchema } from "../../../models/inventory-items";
 import { ProductsSchema } from "../../../models/products";
 import { ApiErrorSchema } from "../../../models/api-error";
 
