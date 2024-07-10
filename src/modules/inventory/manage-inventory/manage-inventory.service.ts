@@ -1,30 +1,43 @@
-import { InventoryItem, Product } from "../../../api/types";
+import { InventoryItems } from "../../../models/inventory-items";
+import { Products } from "../../../models/products";
 
 type ManageInventoryPageModel = {
-  productOptions: Array<Product> | null;
-  inventoryItems: Array<InventoryItem> | null;
+  productOptions: Products | null;
+  inventoryItems: InventoryItems | null;
   shouldShowLoadingIndicator: boolean;
   error: string | null;
 };
 
+export type ManageInventoryPageModelParams = {
+  products?: Products;
+  inventoryItems?: InventoryItems;
+  saveInventoryError?: Error | null;
+  isSaveInventoryPending: boolean;
+  isResetInventoryPending: boolean;
+};
+
 export const getManageInventoryPageModel = (
-  getProductsResponse?: Array<Product>,
-  getInventoryItemsResponse?: Array<InventoryItem>,
-  saveInventoryError?: Error | null,
-  isSaveInventoryPending = false,
-  isResetInventoryPending = false
+  params: ManageInventoryPageModelParams
 ): ManageInventoryPageModel => {
+  const {
+    products,
+    inventoryItems,
+    saveInventoryError,
+    isSaveInventoryPending,
+    isResetInventoryPending,
+  } = params;
+
   const inventoryProductNames = new Set(
-    getInventoryItemsResponse?.map((inventoryItem) => inventoryItem.name)
+    inventoryItems?.map((inventoryItem) => inventoryItem.name)
   );
 
-  const filteredProducts = getProductsResponse?.filter(
+  const filteredProducts = products?.filter(
     (product) => !inventoryProductNames.has(product.name)
   );
 
   return {
     productOptions: filteredProducts ?? null,
-    inventoryItems: getInventoryItemsResponse ?? null,
+    inventoryItems: inventoryItems ?? null,
     shouldShowLoadingIndicator:
       isSaveInventoryPending || isResetInventoryPending,
     error: saveInventoryError?.message ?? null,

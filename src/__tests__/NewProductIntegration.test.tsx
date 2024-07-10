@@ -2,7 +2,7 @@ import { App } from "../App";
 
 describe("New Product Page", () => {
   it("Displays error if backend returns error", () => {
-    cy.intercept("PUT", `${process.env.API_URL}/product`, {
+    cy.intercept("PUT", "/product", {
       statusCode: 400,
       body: { error: "product name already exists" },
     });
@@ -15,7 +15,7 @@ describe("New Product Page", () => {
   });
 
   it("Displays list of products and a success message", () => {
-    cy.intercept("PUT", `${process.env.API_URL}/product`, {
+    cy.intercept("PUT", "/product", {
       statusCode: 200,
       body: [
         { name: "Shampoo" },

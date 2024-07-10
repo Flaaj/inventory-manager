@@ -1,17 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
 import { getManageInventoryPageModel } from "./manage-inventory.service";
-import { InventoryItem } from "../../../api/types";
 import { useEffect, useState } from "react";
-
-const getProductsResponseSchema = z.array(z.object({ name: z.string() }));
-const getInventoryItemsResponseSchema = z.array(
-  z.object({ name: z.string(), quantity: z.number() })
-);
-const errorSchema = z.object({ error: z.string() });
+import {
+  InventoryItem,
+  InventoryItems,
+  InventoryItemsSchema,
+} from "../../../models/inventory-items";
+import { ProductsSchema } from "../../../models/products";
+import { ApiErrorSchema } from "../../../models/api-error";
 
 const createGetProductsAdapter = () => async () => {
-  const response = await fetch(`${process.env.API_URL}/product/all`, {
+  const response = await fetch(`/product/all`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -19,11 +18,11 @@ const createGetProductsAdapter = () => async () => {
   });
 
   if (!response.ok) {
-    const message = errorSchema.parse(await response.json()).error;
+    const message = ApiErrorSchema.parse(await response.json()).error;
     throw new Error(message);
   }
 
-  return getProductsResponseSchema.parse(await response.json());
+  return ProductsSchema.parse(await response.json());
 };
 
 const useProducts = () => {
@@ -32,7 +31,7 @@ const useProducts = () => {
 };
 
 const createGetInventoryItemsAdapter = () => async () => {
-  const response = await fetch(`${process.env.API_URL}/inventory`, {
+  const response = await fetch(`/inventory`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -40,11 +39,11 @@ const createGetInventoryItemsAdapter = () => async () => {
   });
 
   if (!response.ok) {
-    const message = errorSchema.parse(await response.json()).error;
+    const message = ApiErrorSchema.parse(await response.json()).error;
     throw new Error(message);
   }
 
-  return getInventoryItemsResponseSchema.parse(await response.json());
+  return InventoryItemsSchema.parse(await response.json());
 };
 
 const useInventoryItems = () => {
@@ -53,8 +52,8 @@ const useInventoryItems = () => {
 };
 
 const createSaveInventoryAdapter =
-  () => async (inventoryItems: Array<InventoryItem>) => {
-    const response = await fetch(`${process.env.API_URL}/inventory`, {
+  () => async (inventoryItems: InventoryItems) => {
+    const response = await fetch(`/inventory`, {
       method: "POST",
       body: JSON.stringify(inventoryItems),
       headers: {
@@ -63,11 +62,11 @@ const createSaveInventoryAdapter =
     });
 
     if (!response.ok) {
-      const message = errorSchema.parse(await response.json()).error;
+      const message = ApiErrorSchema.parse(await response.json()).error;
       throw new Error(message);
     }
 
-    return getInventoryItemsResponseSchema.parse(await response.json());
+    return InventoryItemsSchema.parse(await response.json());
   };
 
 const useSaveInventory = () => {
@@ -80,7 +79,7 @@ const useSaveInventory = () => {
 };
 
 const createResetInventoryAdapter = () => async () => {
-  const response = await fetch(`${process.env.API_URL}/inventory/reset`, {
+  const response = await fetch(`/inventory/reset`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -88,7 +87,7 @@ const createResetInventoryAdapter = () => async () => {
   });
 
   if (!response.ok) {
-    const message = errorSchema.parse(await response.json()).error;
+    const message = ApiErrorSchema.parse(await response.json()).error;
     throw new Error(message);
   }
 };
@@ -108,8 +107,8 @@ export const useManageInventoryPage = () => {
   const saveInventory = useSaveInventory();
   const resetIventory = useResetInventory();
 
-  const [localInventoryItems, setLocalInventoryItems] = //
-    useState<Array<InventoryItem>>([]);
+  const [localInventoryItems, setLocalInventoryItems] =
+    useState<InventoryItems>([]);
 
   useEffect(() => {
     if (inventoryItems.data) {
@@ -127,13 +126,13 @@ export const useManageInventoryPage = () => {
     );
   };
 
-  const model = getManageInventoryPageModel(
-    products.data,
-    localInventoryItems,
-    saveInventory.error,
-    saveInventory.isPending,
-    resetIventory.isPending
-  );
+  const model = getManageInventoryPageModel({
+    products: products.data,
+    inventoryItems: localInventoryItems,
+    saveInventoryError: saveInventory.error,
+    isSaveInventoryPending: saveInventory.isPending,
+    isResetInventoryPending: resetIventory.isPending,
+  });
 
   return {
     actions: {

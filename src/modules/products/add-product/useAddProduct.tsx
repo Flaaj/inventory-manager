@@ -1,14 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
 import { getNewProductPageModel } from "./add-product.service";
-
-const responseSchema = z.array(z.object({ name: z.string() }));
-const errorSchema = z.object({ error: z.string() });
-
-const getProductsResponseSchema = z.array(z.object({ name: z.string() }));
+import { ProductsSchema } from "../../../models/products";
+import { ApiErrorSchema } from "../../../models/api-error";
 
 const createGetProductsAdapter = () => async () => {
-  const response = await fetch(`${process.env.API_URL}/product/all`, {
+  const response = await fetch(`/product/all`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -16,11 +12,11 @@ const createGetProductsAdapter = () => async () => {
   });
 
   if (!response.ok) {
-    const message = errorSchema.parse(await response.json()).error;
+    const message = ApiErrorSchema.parse(await response.json()).error;
     throw new Error(message);
   }
 
-  return getProductsResponseSchema.parse(await response.json());
+  return ProductsSchema.parse(await response.json());
 };
 
 const useProducts = () => {
@@ -29,7 +25,7 @@ const useProducts = () => {
 };
 
 const createAddProductAdapter = () => async (productName: string) => {
-  const response = await fetch(`${process.env.API_URL}/product`, {
+  const response = await fetch(`/product`, {
     method: "PUT",
     body: JSON.stringify({ name: productName }),
     headers: {
@@ -38,11 +34,11 @@ const createAddProductAdapter = () => async (productName: string) => {
   });
 
   if (!response.ok) {
-    const message = errorSchema.parse(await response.json()).error;
+    const message = ApiErrorSchema.parse(await response.json()).error;
     throw new Error(message);
   }
 
-  return responseSchema.parse(await response.json());
+  return ProductsSchema.parse(await response.json());
 };
 
 const useAddProduct = () => {
@@ -58,12 +54,12 @@ export const useNewProductPage = () => {
   const products = useProducts();
   const addProduct = useAddProduct();
 
-  const model = getNewProductPageModel(
-    products.data,
-    addProduct.error,
-    addProduct.isPending,
-    addProduct.isSuccess
-  );
+  const model = getNewProductPageModel({
+    response: products.data,
+    error: addProduct.error,
+    isPending: addProduct.isPending,
+    isSuccess: addProduct.isSuccess,
+  });
 
   return {
     actions: {

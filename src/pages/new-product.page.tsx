@@ -1,5 +1,5 @@
 import { Button } from "../components/Button";
-import Input from "../components/Input";
+import { Input } from "../components/Input";
 import { ProductsList } from "../components/ProductsList";
 import { useNewProductPage } from "../modules/products/add-product/useAddProduct";
 
@@ -19,9 +19,8 @@ export const NewProductPage = () => {
         className="flex flex-col gap-4 w-96 max-w-full mt-6"
         onSubmit={(e) => {
           e.preventDefault();
-          const productName = new FormData(e.currentTarget).get(
-            "name"
-          ) as string;
+          const formData = new FormData(e.currentTarget);
+          const productName = formData.get("name") as string;
           actions.addProduct(productName);
           e.currentTarget.reset();
         }}

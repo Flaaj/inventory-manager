@@ -7,7 +7,7 @@ type Props = HTMLProps<HTMLInputElement> & {
   label?: string;
 };
 
-const Input = ({ className, label, ...props }: Props) => (
+export const Input = ({ className, label, ...props }: Props) => (
   <label
     htmlFor={props.id}
     className={clsx(
@@ -25,5 +25,3 @@ const Input = ({ className, label, ...props }: Props) => (
     />
   </label>
 );
-
-export default Input;

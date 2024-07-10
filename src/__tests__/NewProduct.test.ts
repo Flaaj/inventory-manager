@@ -1,9 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { getNewProductPageModel } from "../modules/products/add-product/add-product.service";
+import {
+  NewProductPageModelParams,
+  getNewProductPageModel,
+} from "../modules/products/add-product/add-product.service";
 
 describe("New product page model", () => {
+  const baseParams: NewProductPageModelParams = {
+    response: undefined,
+    error: null,
+    isPending: false,
+    isSuccess: false,
+  };
+
   it("Shows the form to add a product if user didn't submit yet", () => {
-    const model = getNewProductPageModel(undefined, undefined, false);
+    const params = { ...baseParams };
+
+    const model = getNewProductPageModel(params);
 
     expect(model.error).toBe(null);
     expect(model.products).toBe(null);
@@ -12,25 +24,27 @@ describe("New product page model", () => {
   });
 
   it("Shows error message on error", () => {
-    const model = getNewProductPageModel(
-      undefined,
-      new Error("product name already exists"),
-      false
-    );
+    const params = {
+      ...baseParams,
+      error: new Error("product name already exists"),
+    };
+
+    const model = getNewProductPageModel(params);
 
     expect(model.error).toEqual("product name already exists");
   });
 
   it("Shows success message and products list if user submits the form correctly", () => {
-    const model = getNewProductPageModel(
-      [
+    const params = {
+      ...baseParams,
+      isSuccess: true,
+      response: [
         { name: "Product 1" }, //
         { name: "Product you just added" },
       ],
-      undefined,
-      false,
-      true
-    );
+    };
+
+    const model = getNewProductPageModel(params);
 
     expect(model.products).toStrictEqual([
       { name: "Product 1" }, //
@@ -40,7 +54,12 @@ describe("New product page model", () => {
   });
 
   it("Shows loading indicator if request is processing", () => {
-    const model = getNewProductPageModel(undefined, undefined, true);
+    const params = {
+      ...baseParams,
+      isPending: true,
+    };
+
+    const model = getNewProductPageModel(params);
 
     expect(model.shouldShowLoadingIndicator).toBe(true);
   });

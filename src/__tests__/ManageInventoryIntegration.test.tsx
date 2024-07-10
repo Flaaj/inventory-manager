@@ -2,7 +2,7 @@ import { App } from "../App";
 
 describe("Manage Inventory Page", () => {
   it("Shows inventory and lists products", () => {
-    cy.intercept("GET", `${process.env.API_URL}/product/all`, {
+    cy.intercept("GET", "/product/all", {
       statusCode: 200,
       body: [
         { name: "Product 1" },
@@ -12,7 +12,7 @@ describe("Manage Inventory Page", () => {
         { name: "Product 5" },
       ],
     });
-    cy.intercept("GET", `${process.env.API_URL}/inventory`, {
+    cy.intercept("GET", "/inventory", {
       statusCode: 200,
       body: [
         { name: "Product 1", quantity: 10 },
@@ -42,7 +42,7 @@ describe("Manage Inventory Page", () => {
   });
 
   it("Shouldn't overwrite other quantity inputs when adding new product", () => {
-    cy.intercept("GET", `${process.env.API_URL}/product/all`, {
+    cy.intercept("GET", "/product/all", {
       statusCode: 200,
       body: [
         { name: "Product 1" },
@@ -52,7 +52,7 @@ describe("Manage Inventory Page", () => {
         { name: "Product 5" },
       ],
     });
-    cy.intercept("GET", `${process.env.API_URL}/inventory`, {
+    cy.intercept("GET", "/inventory", {
       statusCode: 200,
       body: [
         { name: "Product 1", quantity: 10 },
@@ -79,7 +79,7 @@ describe("Manage Inventory Page", () => {
   });
 
   it("Shows error message when saving inventory fails", () => {
-    cy.intercept("GET", `${process.env.API_URL}/product/all`, {
+    cy.intercept("GET", "/product/all", {
       statusCode: 200,
       body: [
         { name: "Product 1" },
@@ -89,7 +89,7 @@ describe("Manage Inventory Page", () => {
         { name: "Product 5" },
       ],
     });
-    cy.intercept("GET", `${process.env.API_URL}/inventory`, {
+    cy.intercept("GET", "/inventory", {
       statusCode: 200,
       body: [
         { name: "Product 1", quantity: 10 },
@@ -97,7 +97,7 @@ describe("Manage Inventory Page", () => {
         { name: "Product 3", quantity: 30 },
       ],
     });
-    cy.intercept("POST", `${process.env.API_URL}/inventory`, {
+    cy.intercept("POST", "/inventory", {
       statusCode: 400,
       body: {
         error: "Some of the inventory items are missing in the products list",
@@ -113,7 +113,7 @@ describe("Manage Inventory Page", () => {
   });
 
   it("Deletes product from inventory", () => {
-    cy.intercept("GET", `${process.env.API_URL}/product/all`, {
+    cy.intercept("GET", "/product/all", {
       statusCode: 200,
       body: [
         { name: "Product 1" },
@@ -123,7 +123,7 @@ describe("Manage Inventory Page", () => {
         { name: "Product 5" },
       ],
     });
-    cy.intercept("GET", `${process.env.API_URL}/inventory`, {
+    cy.intercept("GET", "/inventory", {
       statusCode: 200,
       body: [
         { name: "Product 1", quantity: 10 },

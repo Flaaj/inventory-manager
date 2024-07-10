@@ -7,12 +7,18 @@ type NewProductPageModel = {
   shouldShowLoadingIndicator: boolean;
 };
 
+export type NewProductPageModelParams = {
+  response?: Array<Product>;
+  error?: Error | null;
+  isPending: boolean;
+  isSuccess: boolean;
+};
+
 export const getNewProductPageModel = (
-  response?: Array<Product>,
-  error?: Error | null,
-  isPending = false,
-  isSuccess = false
+  params: NewProductPageModelParams
 ): NewProductPageModel => {
+  const { response, error, isPending, isSuccess } = params;
+
   return {
     error: error?.message ?? null,
     shouldShowSuccessMessage: isSuccess,

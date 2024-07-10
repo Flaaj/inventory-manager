@@ -1,5 +1,5 @@
 import { Button } from "../components/Button";
-import Input from "../components/Input";
+import { Input } from "../components/Input";
 import { Select } from "../components/Select";
 import { useManageInventoryPage } from "../modules/inventory/manage-inventory/useManageInventory";
 
@@ -12,15 +12,10 @@ export const InventoryPage = () => {
         onSubmit={(e) => {
           e.preventDefault();
           const formData = new FormData(e.currentTarget);
-
-          const productName = formData.get("product-name") as string;
-          const productQuantity = Number(formData.get("product-quantity"));
-          if (productName && productQuantity) {
-            actions.addInventoryItem({
-              name: productName,
-              quantity: productQuantity,
-            });
-          }
+          actions.addInventoryItem({
+            name: formData.get("product-name") as string,
+            quantity: Number(formData.get("product-quantity")),
+          });
           e.currentTarget.reset();
         }}
         className="flex gap-4 my-4 flex-col md:flex-row"
@@ -30,6 +25,7 @@ export const InventoryPage = () => {
           id="product-name"
           name="product-name"
           className="flex-1"
+          required
         >
           {model.productOptions?.map((product) => (
             <option key={product.name} value={product.name}>
